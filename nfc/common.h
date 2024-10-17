@@ -29,6 +29,9 @@
 #include <linux/delay.h>
 #include <linux/ipc_logging.h>
 #include <linux/clk.h>
+#ifdef CONFIG_NFC_BOB1
+#include <linux/nvmem-consumer.h>
+#endif
 #include <nfcinfo.h>
 #include <sn_uapi.h>
 #include "i2c_drv.h"
@@ -223,6 +226,13 @@ enum gpio_values {
 	GPIO_IRQ = 0x4,
 };
 
+
+//NFC BOB1 state
+enum nfc_bob1_state {
+	NFC_BOB1_DISABLE = 0,
+	NFC_BOB1_ENABLE,
+};
+
 /* NFC GPIO variables */
 struct platform_gpio {
 	unsigned int irq;
@@ -287,6 +297,11 @@ struct nfc_dev {
 	/*secure zone state*/
 	bool secure_zone;
 
+#ifdef CONFIG_NFC_BOB1
+	/* NFC BOB1 nvmem cell*/
+	struct nvmem_cell *nvmem_nfc_bob1_cell;
+#endif
+
 	void *ipcl;
 
 	/* function pointers for the common i2c functionality */
@@ -331,4 +346,5 @@ int validate_nfc_state_nci(struct nfc_dev *nfc_dev);
 int nfc_post_init(struct nfc_dev *nfc_dev);
 int nfc_dynamic_protection_ioctl(struct nfc_dev *nfc_dev, unsigned long sec_zone_trans);
 bool nfc_hw_secure_check(void);
+void nfc_bob1_set(struct nfc_dev *nfc_dev, unsigned char arg);
 #endif /* _COMMON_H_ */

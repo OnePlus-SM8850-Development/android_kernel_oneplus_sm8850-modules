@@ -16,6 +16,7 @@ ifeq ($(TARGET_ENABLE_PERIPHERAL_CONTROL), true)
   endif
 endif
 
+LOCAL_CFLAGS      := -DCONFIG_NFC_BOB1
 LOCAL_MODULE      := nxp-nci.ko
 LOCAL_MODULE_PATH := $(KERNEL_MODULES_OUT)
 LOCAL_SRC_FILES   := $(wildcard $(LOCAL_PATH)/**/*) $(wildcard $(LOCAL_PATH)/*)

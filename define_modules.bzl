@@ -15,6 +15,9 @@ def define_modules(target, variant):
     if target == "parrot":
        copts.append("-DNFC_CLK_REQ_GPIO_WAKEUP")
 
+    if target == "canoe":
+       copts.append("-DCONFIG_NFC_BOB1")
+
     ddk_module(
         name = "{}_nxp-nci".format(tv),
         out = "nxp-nci.ko",

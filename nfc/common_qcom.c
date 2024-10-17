@@ -162,3 +162,48 @@ int nfc_ldo_unvote(struct nfc_dev *nfc_dev)
 	return ret;
 }
 
+#ifdef CONFIG_NFC_BOB1
+void nfc_bob1_set(struct nfc_dev *nfc_dev, unsigned char arg)
+{
+	int rc = 0;
+	u8 *buf;
+	size_t len;
+
+	if (IS_ERR(nfc_dev->nvmem_nfc_bob1_cell)) {
+		pr_err("%s: 'nfc_bob1' cell is not avilable to configure\n",
+			__func__);
+		return;
+	}
+
+	rc = nvmem_cell_write(nfc_dev->nvmem_nfc_bob1_cell,
+						 &arg,
+						 sizeof(arg));
+	if (rc < 0) {
+		pr_err("%s: Write  nfc boob1 cell failed %d\n",
+			__func__, rc);
+		return;
+	}
+
+	buf = nvmem_cell_read(nfc_dev->nvmem_nfc_bob1_cell, &len);
+	if (IS_ERR(buf)) {
+		pr_err("%s: Failed to read (nfc_bob1_cell = %d)\n",
+			__func__, buf[0]);
+		kfree(buf);
+		return;
+	}
+
+	if (buf[0] == arg) {
+		pr_info("%s: Successfully configured SDAM BIT (nfc_bob1_cell: %u)\n",
+			__func__, buf[0]);
+	} else {
+		pr_err("%s: Failed to configure SDAM BIT (nfc_bob1_cell = %u)\n",
+			__func__, buf[0]);
+	}
+	kfree(buf);
+}
+#else
+void nfc_bob1_set(struct st21nfc_device *st21nfc_dev, unsigned char arg)
+{
+  // NFC BOB1 not supported
+}
+#endif

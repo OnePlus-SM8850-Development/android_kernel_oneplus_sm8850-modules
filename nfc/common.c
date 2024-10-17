@@ -415,9 +415,11 @@ static int nfc_ioctl_power_states(struct nfc_dev *nfc_dev, unsigned long arg)
 	} else if (arg == NFC_ENABLE) {
 		/* Setting flag true when NFC is enabled */
 		nfc_dev->cold_reset.is_nfc_enabled = true;
+		nfc_bob1_set(nfc_dev, NFC_BOB1_ENABLE);
 	} else if (arg == NFC_DISABLE) {
 		/* Setting flag true when NFC is disabled */
 		nfc_dev->cold_reset.is_nfc_enabled = false;
+		nfc_bob1_set(nfc_dev, NFC_BOB1_DISABLE);
 	} else {
 		pr_err("NxpDrv: %s: bad arg %lu\n", __func__, arg);
 		ret = -ENOIOCTLCMD;
@@ -464,6 +466,9 @@ int nfc_post_init(struct nfc_dev *nfc_dev)
 	int ret=0;
 #ifndef NFC_CLK_REQ_GPIO_WAKEUP
 	unsigned int clkreq_gpio = 0;
+#endif
+#ifdef CONFIG_NFC_BOB1
+	struct i2c_dev *i2c_dev = &nfc_dev->i2c_dev;
 #endif
 	static int post_init_success;
 	struct platform_configs nfc_configs;
@@ -513,6 +518,15 @@ int nfc_post_init(struct nfc_dev *nfc_dev)
 		gpio_free(nfc_gpio->ven);
 		return ret;
 	}
+
+#ifdef CONFIG_NFC_BOB1
+    /*Get NFC BOB1 NVMEM  Cell Handler */
+	nfc_dev->nvmem_nfc_bob1_cell = devm_nvmem_cell_get(&i2c_dev->client->dev, "nfc_bob1_cell");
+	if (IS_ERR(nfc_dev->nvmem_nfc_bob1_cell)) {
+		ret = PTR_ERR(nfc_dev->nvmem_nfc_bob1_cell);
+		pr_err("%s:Failed to get nfc bob1nvmem-cells %d\n", __func__, ret);
+	}
+#endif
 
 #ifdef NFC_SECURE_PERIPHERAL_ENABLED
 	/*Initialising sempahore to disbale NFC Ven GPIO only after eSE is power off flag is set */
