@@ -202,7 +202,7 @@ void nfc_bob1_set(struct nfc_dev *nfc_dev, unsigned char arg)
 	kfree(buf);
 }
 #else
-void nfc_bob1_set(struct st21nfc_device *st21nfc_dev, unsigned char arg)
+void nfc_bob1_set(struct nfc_dev *nfc_dev, unsigned char arg)
 {
   // NFC BOB1 not supported
 }
