@@ -4,40 +4,49 @@ load("//build/bazel_common_rules/dist:dist.bzl", "copy_to_dist_dir")
 def define_modules(target, variant):
     tv = "{}_{}".format(target, variant)
     copts = []
-    deps = ["//msm-kernel:all_headers"]
+    deps = [
+        "//soc-repo:all_headers",
+        "//soc-repo:{}/drivers/pinctrl/qcom/pinctrl-msm".format(tv),
+        "//soc-repo:{}/kernel/trace/qcom_ipc_logging".format(tv),
+    ]
 
     if target == "sun":
-       copts.append("-DNFC_SECURE_PERIPHERAL_ENABLED")
-       deps += ["//vendor/qcom/opensource/securemsm-kernel:smcinvoke_kernel_headers",
-                "//vendor/qcom/opensource/securemsm-kernel:{}_smcinvoke_dlkm".format(tv)
-       ]
+        copts.append("-DNFC_SECURE_PERIPHERAL_ENABLED")
+        deps += [
+            "//vendor/qcom/opensource/securemsm-kernel:smcinvoke_kernel_headers",
+            "//vendor/qcom/opensource/securemsm-kernel:{}_smcinvoke_dlkm".format(tv),
+            "//soc-repo:{}/drivers/misc/qseecom_proxy".format(tv),
+        ]
 
     if target == "parrot":
-       copts.append("-DNFC_CLK_REQ_GPIO_WAKEUP")
+        copts.append("-DNFC_CLK_REQ_GPIO_WAKEUP")
 
     if target == "canoe":
-       copts.append("-DCONFIG_NFC_BOB1")
+        copts.append("-DCONFIG_NFC_BOB1")
 
     ddk_module(
         name = "{}_nxp-nci".format(tv),
         out = "nxp-nci.ko",
-        srcs = ["nfc/common.c",
-                "nfc/common_nxp.c",
-                "nfc/common_qcom.c",
-                "nfc/ese_cold_reset.c",
-                "nfc/i2c_drv.c",
-                "nfc/common.h",
-                "nfc/common_nxp.h",
-                "nfc/ese_cold_reset.h",
-                "nfc/i2c_drv.h"
-               ],
-        hdrs = ["include/uapi/linux/nfc/nfcinfo.h",
-                "include/uapi/linux/nfc/sn_uapi.h"],
+        srcs = [
+            "nfc/common.c",
+            "nfc/common_nxp.c",
+            "nfc/common_qcom.c",
+            "nfc/ese_cold_reset.c",
+            "nfc/i2c_drv.c",
+            "nfc/common.h",
+            "nfc/common_nxp.h",
+            "nfc/ese_cold_reset.h",
+            "nfc/i2c_drv.h",
+        ],
+        hdrs = [
+            "include/uapi/linux/nfc/nfcinfo.h",
+            "include/uapi/linux/nfc/sn_uapi.h",
+        ],
         includes = [".", "linux", "nfc", "include/uapi/linux/nfc"],
         copts = copts,
         deps = deps,
-        kernel_build= "//msm-kernel:{}".format(tv),
-        visibility = ["//visibility:public"]
+        kernel_build = "//soc-repo:{}_base_kernel".format(tv),
+        visibility = ["//visibility:public"],
     )
 
     copy_to_dist_dir(
@@ -49,4 +58,3 @@ def define_modules(target, variant):
         allow_duplicate_filenames = False,
         mode_overrides = {"**/*": "644"},
     )
-
