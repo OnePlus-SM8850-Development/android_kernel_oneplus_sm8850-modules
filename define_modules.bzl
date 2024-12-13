@@ -4,18 +4,31 @@ load("//build/bazel_common_rules/dist:dist.bzl", "copy_to_dist_dir")
 def define_modules(target, variant):
     tv = "{}_{}".format(target, variant)
     copts = []
-    deps = [
-        "//soc-repo:all_headers",
-        "//soc-repo:{}/drivers/pinctrl/qcom/pinctrl-msm".format(tv),
-        "//soc-repo:{}/kernel/trace/qcom_ipc_logging".format(tv),
-    ]
-
+    deps = []
+    deps = select({
+        "//build/kernel/kleaf:socrepo_true": [
+            "//soc-repo:all_headers",
+            "//soc-repo:{}/drivers/pinctrl/qcom/pinctrl-msm".format(tv),
+            "//soc-repo:{}/kernel/trace/qcom_ipc_logging".format(tv),
+        ],
+        "//build/kernel/kleaf:socrepo_false": [
+            "//msm-kernel:all_headers",
+        ],
+    })
+    kernel_build = select({
+        "//build/kernel/kleaf:socrepo_true": "//soc-repo:{}_base_kernel".format(tv),
+        "//build/kernel/kleaf:socrepo_false": "//msm-kernel:{}".format(tv),
+    })
+    if target == "sun":
+        deps += select({
+            "//build/kernel/kleaf:socrepo_true": ["//soc-repo:{}/drivers/misc/qseecom_proxy".format(tv)],
+            "//build/kernel/kleaf:socrepo_false": [],
+        })
     if target == "sun":
         copts.append("-DNFC_SECURE_PERIPHERAL_ENABLED")
         deps += [
             "//vendor/qcom/opensource/securemsm-kernel:smcinvoke_kernel_headers",
             "//vendor/qcom/opensource/securemsm-kernel:{}_smcinvoke_dlkm".format(tv),
-            "//soc-repo:{}/drivers/misc/qseecom_proxy".format(tv),
         ]
 
     if target == "parrot":
@@ -45,7 +58,7 @@ def define_modules(target, variant):
         includes = [".", "linux", "nfc", "include/uapi/linux/nfc"],
         copts = copts,
         deps = deps,
-        kernel_build = "//soc-repo:{}_base_kernel".format(tv),
+        kernel_build = kernel_build,
         visibility = ["//visibility:public"],
     )
 
