@@ -520,9 +520,9 @@ int nfc_post_init(struct nfc_dev *nfc_dev)
 	}
 
 #ifdef CONFIG_NFC_BOB1
-    /*Get NFC BOB1 NVMEM  Cell Handler */
+        /*Get NFC BOB1 NVMEM  Cell Handler */
 	nfc_dev->nvmem_nfc_bob1_cell = devm_nvmem_cell_get(&i2c_dev->client->dev, "nfc_bob1_cell");
-	if (IS_ERR(nfc_dev->nvmem_nfc_bob1_cell)) {
+	if (IS_ERR_OR_NULL(nfc_dev->nvmem_nfc_bob1_cell)) {
 		ret = PTR_ERR(nfc_dev->nvmem_nfc_bob1_cell);
 		pr_err("%s:Failed to get nfc bob1nvmem-cells %d\n", __func__, ret);
 	}
