@@ -169,8 +169,8 @@ void nfc_bob1_set(struct nfc_dev *nfc_dev, unsigned char arg)
 	u8 *buf;
 	size_t len;
 
-	if (IS_ERR(nfc_dev->nvmem_nfc_bob1_cell)) {
-		pr_err("%s: 'nfc_bob1' cell is not avilable to configure\n",
+	if (IS_ERR_OR_NULL(nfc_dev->nvmem_nfc_bob1_cell)) {
+		pr_info("%s: nfc_bob1 cell not avilable to configure\n",
 			__func__);
 		return;
 	}
