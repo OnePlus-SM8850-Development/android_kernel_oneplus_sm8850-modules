@@ -9,3 +9,6 @@ define_modules("canoe", "perf")
 
 define_modules("lahaina", "consolidate")
 define_modules("lahaina", "perf")
+
+define_modules("parrot", "consolidate")
+define_modules("parrot", "perf")
