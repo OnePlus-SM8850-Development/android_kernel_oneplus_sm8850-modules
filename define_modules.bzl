@@ -6,23 +6,23 @@ def define_modules(target, variant):
     copts = []
     deps = []
     deps = select({
-        "//build/kernel/kleaf:socrepo_true": [
+        "//build/qcom_build_extensions:qtisocrepo_true": [
             "//soc-repo:all_headers",
             "//soc-repo:{}/drivers/pinctrl/qcom/pinctrl-msm".format(tv),
             "//soc-repo:{}/kernel/trace/qcom_ipc_logging".format(tv),
         ],
-        "//build/kernel/kleaf:socrepo_false": [
+        "//build/qcom_build_extensions:qtisocrepo_false": [
             "//msm-kernel:all_headers",
         ],
     })
     kernel_build = select({
-        "//build/kernel/kleaf:socrepo_true": "//soc-repo:{}_base_kernel".format(tv),
-        "//build/kernel/kleaf:socrepo_false": "//msm-kernel:{}".format(tv),
+        "//build/qcom_build_extensions:qtisocrepo_true": "//soc-repo:{}_base_kernel".format(tv),
+        "//build/qcom_build_extensions:qtisocrepo_false": "//msm-kernel:{}".format(tv),
     })
     if target == "sun":
         deps += select({
-            "//build/kernel/kleaf:socrepo_true": ["//soc-repo:{}/drivers/misc/qseecom_proxy".format(tv)],
-            "//build/kernel/kleaf:socrepo_false": [],
+            "//build/qcom_build_extensions:qtisocrepo_true": ["//soc-repo:{}/drivers/misc/qseecom_proxy".format(tv)],
+            "//build/qcom_build_extensions:qtisocrepo_false": [],
         })
     if target == "sun":
         copts.append("-DNFC_SECURE_PERIPHERAL_ENABLED")
