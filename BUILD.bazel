@@ -12,3 +12,6 @@ define_modules("lahaina", "perf")
 
 define_modules("parrot", "consolidate")
 define_modules("parrot", "perf")
+
+define_modules("bengal", "consolidate")
+define_modules("bengal", "perf")
