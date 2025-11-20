@@ -42,6 +42,10 @@ def define_modules(target, variant):
             "//vendor/qcom/opensource/securemsm-kernel:{}_smcinvoke_dlkm".format(tv),
         ]
 
+
+    if target == "chora":
+        copts.append("-DCONFIG_NFC_BOB1")
+
     ddk_module(
         name = "{}_nxp-nci".format(tv),
         out = "nxp-nci.ko",
