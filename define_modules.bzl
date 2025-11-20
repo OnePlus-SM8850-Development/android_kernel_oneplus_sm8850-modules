@@ -42,8 +42,10 @@ def define_modules(target, variant):
             "//vendor/qcom/opensource/securemsm-kernel:{}_smcinvoke_dlkm".format(tv),
         ]
 
-
     if target == "chora":
+        copts.append("-DCONFIG_NFC_BOB1")
+
+    if target == "malabar":
         copts.append("-DCONFIG_NFC_BOB1")
 
     ddk_module(
