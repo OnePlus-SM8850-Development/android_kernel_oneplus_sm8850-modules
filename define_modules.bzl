@@ -31,6 +31,9 @@ def define_modules(target, variant):
             "//vendor/qcom/opensource/securemsm-kernel:{}_smcinvoke_dlkm".format(tv),
         ]
 
+    if target == "bengal":
+        copts.append("-DNFC_CLK_REQ_GPIO_WAKEUP")
+
     if target == "parrot":
         copts.append("-DNFC_CLK_REQ_GPIO_WAKEUP")
 
