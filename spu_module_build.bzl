@@ -1,7 +1,8 @@
 load("//build/kernel/kleaf:kernel.bzl", "kernel_module",
                                         "kernel_modules_install",
                                         "ddk_module")
-load("//build/bazel_common_rules/dist:dist.bzl", "copy_to_dist_dir")
+load("@rules_pkg//pkg:install.bzl", "pkg_install")
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 
 def _register_module_to_map(module_map, name, path, config_option, srcs, config_srcs, deps):
     processed_config_srcs = {}
@@ -95,15 +96,17 @@ def define_target_variant_modules(target, variant, registry, modules, config_opt
 
         all_module_rules.append(rule_name)
 
-    copy_to_dist_dir(
+    pkg_files(
+        name = kernel_build + "_dist_files",
+        srcs = all_module_rules,
+        visibility = ["//visibility:private"],
+        strip_prefix = strip_prefix.files_only(),
+    )
+
+    pkg_install(
         name = "{}_spu-drivers_dist".format(kernel_build),
-        data = all_module_rules,
-        dist_dir = "../vendor/qcom/opensource/spu-drivers/out", ## TODO
-        flat = True,
-        wipe_dist_dir = False,
-        allow_duplicate_filenames = False,
-        mode_overrides = {"**/*": "644"},
-        #define_target_variant_modules = "info",
+        srcs = [":{}_dist_files".format(kernel_build)],
+        destdir = "../vendor/qcom/opensource/spu-drivers/out",
     )
 
 def define_consolidate_gki_modules(target, registry, modules, config_options = []):
