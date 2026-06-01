@@ -50,6 +50,7 @@ def define_modules(target, variant):
 
     if target == "malabar":
         copts.append("-DCONFIG_NFC_BOB1")
+        copts.append("-DCONFIG_NFC_NXP_I2C_DMA_SAFE")
 
     ddk_module(
         name = "{}_nxp-nci".format(tv),

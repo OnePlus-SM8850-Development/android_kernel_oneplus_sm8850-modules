@@ -181,7 +181,12 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 
 	memset(buf, 0x00, count);
 	/* Read data */
+	/* Aldabra's I2C controller requires I2C_M_DMA_SAFE on receive messages */
+#ifdef CONFIG_NFC_NXP_I2C_DMA_SAFE
+	ret = i2c_master_recv_dmasafe(nfc_dev->i2c_dev.client, buf, count);
+#else
 	ret = i2c_master_recv(nfc_dev->i2c_dev.client, buf, count);
+#endif
 	NFCLOG_IPC(nfc_dev, false, "%s of %zu bytes, ret %d", __func__, count,
 								ret);
 	if (ret <= 0) {
@@ -282,7 +287,11 @@ ssize_t nfc_i2c_dev_read(struct file *filp, char __user *buf, size_t count,
 		count = MAX_NCI_BUFFER_SIZE;
 
 	if (filp->f_flags & O_NONBLOCK) {
+#ifdef CONFIG_NFC_NXP_I2C_DMA_SAFE
+		ret = i2c_master_recv_dmasafe(nfc_dev->i2c_dev.client, nfc_dev->read_kbuf, count);
+#else
 		ret = i2c_master_recv(nfc_dev->i2c_dev.client, nfc_dev->read_kbuf, count);
+#endif
 		pr_debug("NxpDrv: %s: NONBLOCK read ret = %d\n", __func__, ret);
 	} else {
 		ret = i2c_read(nfc_dev, nfc_dev->read_kbuf, count, 0);
