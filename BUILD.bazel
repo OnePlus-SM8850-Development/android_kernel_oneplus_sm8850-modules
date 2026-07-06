@@ -21,3 +21,7 @@ define_modules("chora", "perf")
 
 define_modules("malabar", "consolidate")
 define_modules("malabar", "perf")
+
+
+define_modules("shikra", "consolidate")
+define_modules("shikra", "perf")
