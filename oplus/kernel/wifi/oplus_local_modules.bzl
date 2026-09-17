@@ -1,8 +1,8 @@
 load(":repo_paths.bzl", "soc_label")
 load("//build/kernel/kleaf:kernel.bzl", "checkpatch", "ddk_headers", "ddk_module")
-load("//build/kernel/oplus:oplus_modules_define.bzl", "oplus_ddk_get_target", "define_oplus_ddk_module",
+load(":oplus_modules_define.bzl", "oplus_ddk_get_target", "define_oplus_ddk_module",
  "oplus_ddk_get_kernel_version", "bazel_support_platform", "oplus_ddk_get_variant")
-load("//build/kernel/oplus:oplus_modules_dist.bzl", "ddk_copy_to_dist_dir")
+load(":oplus_modules_dist.bzl", "ddk_copy_to_dist_dir")
 
 def version_compare(v1, v2):
     v1_parts = [int(x) for x in v1.split(".")]
@@ -107,7 +107,7 @@ def define_oplus_local_modules():
             "oplus_wificapcenter",
         ]
 
-        # QCOM only: used to form labels into //soc-repo:{target}_{variant}/
+        # QCOM only: used to form labels in the configured SoC repository.
         if bazel_support_platform == "qcom" :
             _KERNEL_BUILD_VARIANT = "{}_{}".format(oplus_ddk_get_target(), oplus_ddk_get_variant())
             target = oplus_ddk_get_target()
