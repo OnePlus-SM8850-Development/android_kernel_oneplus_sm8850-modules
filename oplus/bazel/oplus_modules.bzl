@@ -76,7 +76,6 @@ def define_oplus_ddk_modules(target, msm_target, variant):
         modules_label("oplus/kernel/mm:oplus_bsp_zstdn"),
         modules_label("oplus/kernel/mm:oplus_bsp_mm_osvelte"),
         modules_label("oplus/kernel/mm:oplus_bsp_pcppages_opt"),
-        modules_label("oplus/kernel/mm:oplus_bsp_uxmem_opt"),
         modules_label("oplus/kernel/multimedia/feedback/bazel:oplus_mm_kevent"),
         modules_label("oplus/kernel/multimedia/feedback/bazel:oplus_mm_kevent_fb"),
         modules_label("oplus/kernel/network:oplus_network_esim"),
