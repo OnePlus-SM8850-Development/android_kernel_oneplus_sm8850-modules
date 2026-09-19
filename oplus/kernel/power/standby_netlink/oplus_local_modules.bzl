@@ -9,14 +9,11 @@ def define_oplus_local_modules():
     kernel_build_variant = "{}_{}".format(target, variant)
 
     if bazel_support_platform == "qcom" :
-        ko_deps = select({
-            "//build/kernel/kleaf:socrepo_true":[
+        ko_deps = [
                     soc_label("{}/drivers/regulator/debug-regulator").format(kernel_build_variant),
                     soc_label("{}/drivers/clk/qcom/clk-qcom").format(kernel_build_variant),
                     soc_label("{}/drivers/soc/qcom/smp2p").format(kernel_build_variant),
-                ],
-            "//build/kernel/kleaf:socrepo_false": [],
-        })
+                ]
     elif bazel_support_platform == "mtk":
         ko_deps = []
     else :

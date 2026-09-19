@@ -10,13 +10,10 @@ def define_oplus_local_modules():
     kernel_version = oplus_ddk_get_kernel_version()
 
     if bazel_support_platform == "qcom" :
-        ko_deps = select({
-            "//build/kernel/kleaf:socrepo_true":[
+        ko_deps = [
                     soc_label("{}/drivers/soc/qcom/qcom_stats").format(kernel_build_variant),
                     soc_label("{}/drivers/soc/qcom/smem").format(kernel_build_variant),
-                ],
-            "//build/kernel/kleaf:socrepo_false": [],
-        })
+                ]
         copts = ["-DCONFIG_QCOM_SMEM"]
         header_deps = []
     elif bazel_support_platform == "mtk" :
