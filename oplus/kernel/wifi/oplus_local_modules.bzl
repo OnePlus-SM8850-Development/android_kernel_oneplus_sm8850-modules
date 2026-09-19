@@ -1,3 +1,4 @@
+load(":repo_paths.bzl", "soc_label")
 load("//build/kernel/kleaf:kernel.bzl", "checkpatch", "ddk_headers", "ddk_module")
 load("//build/kernel/oplus:oplus_modules_define.bzl", "oplus_ddk_get_target", "define_oplus_ddk_module",
  "oplus_ddk_get_kernel_version", "bazel_support_platform", "oplus_ddk_get_variant")
@@ -113,8 +114,8 @@ def define_oplus_local_modules():
 
             if target == "canoe":
                 wonder_ko_deps = [
-                    "//soc-repo:{}/net/wireless/cfg80211".format(_KERNEL_BUILD_VARIANT),
-                    "//soc-repo:{}/net/mac80211/mac80211".format(_KERNEL_BUILD_VARIANT),
+                    soc_label("{}/net/wireless/cfg80211").format(_KERNEL_BUILD_VARIANT),
+                    soc_label("{}/net/mac80211/mac80211").format(_KERNEL_BUILD_VARIANT),
                 ]
 
                 define_oplus_ddk_module(
